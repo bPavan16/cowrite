@@ -131,10 +131,8 @@ const TextEditor = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* Google Docs-like header */}
-      {/* Document container */}
       <div className="flex-1 overflow-auto py-8 px-4 flex justify-center">
-        <div className="bg-white shadow-md  w-full max-w-6xl mx-auto h-[11in]">
+        <div className="bg-white shadow-md w-full max-w-6xl mx-auto h-[11in]">
           {/* Quill editor container */}
           <div id="container" ref={wrapperRef} className="h-full" />
         </div>
@@ -147,30 +145,79 @@ const TextEditor = () => {
           border: none;
           border-bottom: 1px solid #e5e7eb;
           background-color: #f9fafb;
+          // display: flex;
+          // align-items: center;
+          // flex-wrap: wrap;
+          // text-align: center;
+          // justify-content: center;
           padding: 0.5rem;
           position: sticky;
+          z-index: 100;
           top: 0;
-          z-index: 10;
+          
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+          ;
         }
 
         #container .ql-container.ql-snow {
           border: none;
-          font-family: "Arial", sans-serif;
+          font-family: "Inter", "Arial", sans-serif;
         }
 
         #container .ql-editor {
-          min-height: 100%;
-          font-size: 11pt;
-          line-height: 1.5;
-          padding: 72px;
+          min-height: calc(100% - 42px);
+          font-size: 12pt;
+          line-height: 1.6;
+          padding: 40px;
+          color: #333;
+          background-color: white;
         }
 
-        /* Hide default overflows */
+        #container .ql-editor:focus {
+          outline: none;
+        }
+
+        /* Format toolbar buttons */
+        .ql-formats button,
+        .ql-formats .ql-picker {
+          margin-right: 6px;
+          opacity: 0.85;
+          transition: opacity 0.2s;
+        }
+
+        .ql-formats button:hover,
+        .ql-formats .ql-picker:hover {
+          opacity: 1;
+        }
+
+        /* Improve dropdown menus */
+        .ql-snow .ql-picker-options {
+          border-radius: 4px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Fix overflow correctly */
         .ql-container {
           overflow: visible !important;
+          display: flex;
+          flex-direction: column;
         }
+
         .ql-editor {
-          overflow: visible !important;
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          flex-grow: 1;
+        }
+
+        @media (max-width: 768px) {
+          #container .ql-editor {
+            padding: 30px;
+            font-size: 11pt;
+          }
+
+          #container .ql-toolbar.ql-snow {
+            padding: 0.5rem;
+          }
         }
       `}</style>
     </div>
