@@ -182,4 +182,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
   <p>© 2023</p>
 </div>
 
-Similar code found with 2 license types
