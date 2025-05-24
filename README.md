@@ -80,7 +80,7 @@ CoWrite follows a client-server architecture:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/cowrite.git
+   git clone https://github.com/bPavan16/cowrite.git
    cd cowrite
    ```
 
