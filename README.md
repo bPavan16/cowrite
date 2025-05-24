@@ -24,7 +24,7 @@
 ## 🖥️ Screenshots
 
 <div align="center">
-  <img src="images\image4.jpg" alt="Document List" width="80%"/>
+  <img src="images\image4.png" alt="Document List" width="80%"/>
   <p><em>Home Page for Cowrite</em></p>
 
   <img src="images\image1.png" alt="Document Editor" width="80%"/>
