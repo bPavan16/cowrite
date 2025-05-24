@@ -178,7 +178,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 <div align="center">
-  <p>Made with ❤️ by Your Name</p>
-  <p>© 2023</p>
+  <p>Made with ❤️ by Pavan © 2023</p>
 </div>
 
