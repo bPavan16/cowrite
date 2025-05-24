@@ -1,53 +1,87 @@
 import { Server } from 'socket.io';
-
-// Assuming you have an HTTP server defined above
-// If not, you'll need to create one
 import http from 'http';
-const server = http.createServer();  // Add this if you don't have a server defined
+import express from 'express';
+import cors from 'cors';
+import connectToDb from './config/db.js';
+import { findOrCreateDocument, saveDocument } from './utils/db.utils.js';
+import documentRoutes from './routes/document.routes.js';
+
+// Create Express app
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// API Routes
+app.use('/api/documents', documentRoutes);
+
+// Create HTTP server with Express
+const server = http.createServer(app);
+
+// Ensure the database connection is established
+connectToDb();
 
 const ioServer = new Server(server, {
     cors: {
         origin: 'http://localhost:5173',
-        methods: ['GET', 'POST'],
+        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     }
 });
 
 ioServer.on('connection', (socket) => {
+    console.log(`New client ${socket.id} connected`);
 
-    // Handle incoming socket connection
+    socket.on('get-document', async (documentId, title) => {
+        try {
+            // Fetch the document from your database or storage
+            const document = await findOrCreateDocument(documentId, title);
 
-    socket.on('send-changes', (delta) => {
-        // console.log('Received changes:', delta);
-        socket.broadcast.emit('receive-changes', delta);
+            // console.log('Client connected with document ID:', documentId);
+            socket.join(documentId);
+
+            socket.emit('load-document', document);
+
+            socket.on('send-changes', (delta) => {
+                socket.broadcast.to(documentId).emit('receive-changes', delta);
+                console.log('Changes broadcast to room:', documentId);
+            });
+
+            socket.on('update-title', async (newTitle) => {
+                try {
+                    // Update just the title
+                    await saveDocument(documentId, null, newTitle);
+                    // Broadcast title change to other users
+                    socket.broadcast.to(documentId).emit('title-updated', newTitle);
+                    console.log('Title updated:', newTitle);
+                } catch (error) {
+                    console.error('Error updating title:', error);
+                }
+            });
+
+            socket.on('save-document', async (data) => {
+                try {
+                    // Save document content and title if provided
+                    await saveDocument(documentId, data.data, data.title);
+                    // console.log('Document saved successfully');
+                } catch (error) {
+                    console.error('Error saving document:', error);
+                }
+            });
+        } catch (error) {
+            console.error('Error handling document:', error);
+            socket.emit('error', { message: 'Error loading document' });
+        }
     });
-
-    socket.on('get-document', (documentId) => {
-
-        const document = ''; // Fetch the document from your database or storage
-
-        socket.join(documentId);
-
-        socket.emit('load-document', document);
-
-        socket.on('save-document', (data) => {
-            socket.broadcast.to(documentId).emit('receive-changes', data);
-            // Save the document to your database or storage
-            console.log('Document saved:', data);
-        });
-    })
-
-
-
-    console.log('A client connected');
-    console.log(`Socket ID: ${socket.id}`);
 
     // Handle disconnect
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
+        console.log(`Client ${socket.id} disconnected`);
     });
 });
 
 // Make sure to listen on a port
-server.listen(3001, () => {
-    console.log('Server running on port 3001');
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

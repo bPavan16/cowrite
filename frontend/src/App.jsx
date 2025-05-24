@@ -1,4 +1,6 @@
 import TextEditor from "./pages/TextEditor/TextEditor";
+import DocumentList from "./pages/Documents/DocumentList";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,28 +8,31 @@ import {
   Navigate,
 } from "react-router-dom";
 import { v4 as uuidV4 } from "uuid";
-import Header from "./components/Header/Header";
+import Header from "./components/Header";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/documents" element={<div>hello</div>} />
-
-        <Route
-          path="/documents/new"
-          element={<Navigate to={`/documents/${uuidV4()}`} replace />}
-        />
-        <Route
-          path="/documents/:id"
-          element={
-            <div className="container mx-auto flex flex-col h-screen">
-              {/* <Header /> */}
-              <TextEditor />
-            </div>
-          }
-        />
-      </Routes>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage/>} />
+          <Route path="/documents" element={<DocumentList />} />
+          <Route
+            path="/documents/new"
+            element={<Navigate to={`/documents/${uuidV4()}`} replace />}
+          />
+          <Route
+            path="/documents/:id"
+            element={
+              <div className="container mx-auto flex flex-col h-screen">
+                <TextEditor />
+              </div>
+            }
+          />
+        </Routes>
+      </div>
     </Router>
   );
 }

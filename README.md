@@ -1,90 +1,186 @@
-Collecting workspace information# CoWrite - Collaborative Document Editor
 
-CoWrite is a real-time collaborative document editor application inspired by Google Docs. It allows multiple users to simultaneously edit the same document and see each other's changes in real-time.
+<div align="center">
+  
+# 📝 CoWrite
+  
+  ### A real-time collaborative document editor
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![Node.js](https://img.shields.io/badge/Node.js-22.x-green.svg)](https://nodejs.org/)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green.svg)](https://www.mongodb.com/)
+  [![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://reactjs.org/)
+  [![Socket.io](https://img.shields.io/badge/Socket.io-4.x-black.svg)](https://socket.io/)
 
-## Features
+</div>
 
-- Real-time collaborative text editing
-- Rich text formatting with a comprehensive toolbar
-- Document autosaving
-- Unique URLs for each document
-- Responsive design
+## ✨ Features
 
-## Technologies Used
+- **Real-time collaboration** - Multiple users can edit documents simultaneously
+- **Rich text editing** - Format text with various styles and formatting options
+- **Document management** - Create, rename, and delete documents
+- **Auto-saving** - Changes are automatically saved to the database
+- **Responsive design** - Works on desktop and mobile devices
+- **User-friendly interface** - Clean, modern UI with intuitive controls
+
+## 🖥️ Screenshots
+
+<div align="center">
+  <img src="images\image4.jpg" alt="Document List" width="80%"/>
+  <p><em>Home Page for Cowrite</em></p>
+
+  <img src="images\image1.png" alt="Document Editor" width="80%"/>
+  <p><em>Document management dashboard</em></p>
+  
+  <img src="images\image2.png" alt="Document List" width="80%"/>
+  <p><em>Document Editor with rich text formatting</em></p>
+  
+  <img src="images\image3.jpg" alt="Document List" width="80%"/>
+  <p><em>Document Editor with rich text formatting</em></p>
+
+</div>
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- React 19
-- Vite 6
-- React Router 7
-- Quill rich text editor
-- Socket.io client for real-time communication
-- Tailwind CSS for styling
-- UUID for document ID generation
+
+- **React** - UI library
+- **React Router** - Navigation
+- **Quill.js** - Rich text editor
+- **Socket.io Client** - Real-time communication
+- **Tailwind CSS** - Styling
+- **Axios** - API requests
+- **React Hot Toast** - Notifications
 
 ### Backend
-- Node.js
-- Socket.io for WebSocket communication
 
-## Installation and Setup
+- **Node.js** - Runtime environment
+- **Express** - Web framework
+- **Socket.io** - WebSocket communication
+- **MongoDB** - Database
+- **Mongoose** - ODM for MongoDB
+
+## 🏗️ Architecture
+
+CoWrite follows a client-server architecture:
+
+1. **Frontend**: React application that handles UI rendering and user interactions
+2. **Backend**: Node.js server that manages document operations and real-time collaboration
+3. **Database**: MongoDB for document storage
+4. **Real-time Communication**: Socket.io for bidirectional communication between clients and server
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v16 or higher)
+
+- Node.js (v16+)
+- MongoDB (local or Atlas)
 - npm or yarn
 
-### Backend Setup
-```bash
-cd backend
-npm install
-npm start
-```
+### Installation
 
-### Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
+1. Clone the repository:
 
-## Usage
+   ```bash
+   git clone https://github.com/yourusername/cowrite.git
+   cd cowrite
+   ```
 
-1. Open your browser and navigate to `http://localhost:5173`
-2. You'll be automatically redirected to a new document with a unique ID
-3. Share the document URL with collaborators to edit together
-4. Use the rich text toolbar to format your document
+2. Install backend dependencies:
 
-## Project Structure
+   ```bash
+   cd backend
+   npm install
+   ```
 
-```
-cowrite/
-├── README.md
-├── backend/
-│   ├── package.json
-│   └── src/
-│       └── server.js
-└── frontend/
-    ├── package.json
-    ├── index.html
-    ├── vite.config.js
-    └── src/
-        ├── App.jsx
-        ├── main.jsx
-        ├── index.css
-        └── components/
-            ├── Header/
-            │   └── Header.jsx
-            └── TextEditor/
-                ├── TextEditor.css
-                └── TextEditor.jsx
-```
+3. Install frontend dependencies:
 
-## Future Improvements
+   ```bash
+   cd ../frontend
+   npm install
+   ```
 
-- User authentication and authorization
-- Persistent document storage
-- Document sharing options and permissions
-- Cursor presence to show other users' positions
-- Mobile optimization
+4. Create a `.env` file in the backend directory with the following variables:
+   ```
+   PORT=3001
+   MONGODB_URI=mongodb://localhost:27017/cowrite
+   ```
 
-## License
+### Running the Application
 
-This project is available as open source under the terms of the MIT License.
+1. Start the MongoDB server (if using local MongoDB)
+
+2. Start the backend server:
+
+   ```bash
+   cd backend
+   npm start
+   ```
+
+3. Start the frontend development server:
+
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+## 🔍 Usage
+
+### Creating a New Document
+
+1. Click on the "New Document" button on the home page
+2. Start typing in the editor
+3. The document will be auto-saved as you type
+
+### Collaborating on a Document
+
+1. Share the document URL with collaborators
+2. Multiple users can edit the document simultaneously
+3. Changes appear in real-time for all connected users
+
+### Managing Documents
+
+1. View all your documents on the home page
+2. Rename documents by clicking the "Rename" button
+3. Delete documents using the "Delete" button
+
+## 📡 API Endpoints
+
+### Documents
+
+- `GET /api/documents` - Get all documents
+- `GET /api/documents/:id` - Get a specific document
+- `POST /api/documents` - Create a new document
+- `PATCH /api/documents/:id/title` - Update document title
+- `DELETE /api/documents/:id` - Delete a document
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgements
+
+- [Quill.js](https://quilljs.com/) for the rich text editor
+- [Socket.io](https://socket.io/) for real-time capabilities
+- [Tailwind CSS](https://tailwindcss.com/) for the styling
+- [React Hot Toast](https://react-hot-toast.com/) for beautiful notifications
+
+---
+
+<div align="center">
+  <p>Made with ❤️ by Your Name</p>
+  <p>© 2023</p>
+</div>
+
+Similar code found with 2 license types

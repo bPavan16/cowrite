@@ -5,8 +5,7 @@ import { useCallback } from "react";
 import { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
-import "./TextEditor.css"; 
-
+import "./TextEditor.css";
 
 import { io } from "socket.io-client";
 
@@ -19,6 +18,20 @@ const TextEditor = () => {
 
   const [socket, setSocket] = useState(null);
   const [quill, setQuill] = useState(null);
+
+  useEffect(() => {
+    if (socket === null || quill === null) return;
+
+    const interval = setInterval(() => {
+      socket.emit("save-document", {
+        data: quill.getContents(),
+      });
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [socket, quill]);
 
   useEffect(() => {
     if (quill === null || socket === null) return;
@@ -119,7 +132,6 @@ const TextEditor = () => {
           ["link"],
 
           // Remove formatting
-          ["clean"],
         ],
       },
     });
@@ -133,7 +145,7 @@ const TextEditor = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <div className="flex-1 overflow-auto py-8 px-4 flex justify-center">
+      <div className="flex-1 overflow-auto py-3 shadow-2xl px-4 flex justify-center">
         <div className="w-full max-w-6xl pb-10 h-[11in]">
           {/* Quill editor container */}
           <div id="container" ref={wrapperRef} className="h-full" />
@@ -142,8 +154,7 @@ const TextEditor = () => {
       {/* Status bar */}
       <div className="bg-white border-t border-gray-200 px-4 py-1.5 flex justify-between items-center"></div>
 
-      <style jsx>{`
-      `}</style>
+      <style jsx>{``}</style>
     </div>
   );
 };
