@@ -12,8 +12,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/documents" element={<div>hello</div>} />
+
         <Route
-          path="/"
+          path="/documents/new"
           element={<Navigate to={`/documents/${uuidV4()}`} replace />}
         />
         <Route
