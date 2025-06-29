@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -54,56 +57,48 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister, onClose }) =>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
             placeholder="Enter your email"
             disabled={isLoading}
+            className={errors.email ? "border-destructive" : ""}
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            <p className="text-destructive text-sm">{errors.email}</p>
           )}
         </div>
 
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-              errors.password ? 'border-red-500' : 'border-gray-300'
-            }`}
             placeholder="Enter your password"
             disabled={isLoading}
+            className={errors.password ? "border-destructive" : ""}
           />
           {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            <p className="text-destructive text-sm">{errors.password}</p>
           )}
         </div>
 
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
+          className="w-full"
         >
           {isLoading ? (
-            <div className="flex items-center justify-center">
-              <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin mr-2"></div>
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Signing in...
-            </div>
+            </>
           ) : (
             'Sign In'
           )}
@@ -111,15 +106,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister, onClose }) =>
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Don't have an account?{' '}
-          <button
+          <Button
+            variant="link"
             onClick={onSwitchToRegister}
-            className="text-blue-600 hover:text-blue-700 font-medium"
             disabled={isLoading}
+            className="p-0 h-auto font-medium"
           >
             Sign up
-          </button>
+          </Button>
         </p>
       </div>
     </div>

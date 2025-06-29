@@ -2,6 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Badge } from '../ui/badge';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Switch } from '../ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Card, CardContent } from '../ui/card';
+import { Search, Trash2, Users, Globe, Lock } from 'lucide-react';
 
 interface User {
   _id: string;
@@ -182,194 +191,209 @@ const ShareModal: React.FC<ShareModalProps> = ({
     return user.username;
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Share Document</h2>
-              <p className="text-sm text-gray-600 mt-1">{documentTitle}</p>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
+          <DialogTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Share Document
+          </DialogTitle>
+          <DialogDescription>{documentTitle}</DialogDescription>
+        </DialogHeader>
 
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-modal px-1">
+          <div className="space-y-6 pr-1">
           {/* Visibility Toggle */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-gray-900">Document Visibility</h3>
-                <p className="text-sm text-gray-600">
-                  {isPublic ? 'Anyone can view this document' : 'Only collaborators can access this document'}
-                </p>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    {isPublic ? (
+                      <Globe className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Lock className="h-4 w-4 text-gray-600" />
+                    )}
+                    <h3 className="font-medium">Document Visibility</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {isPublic ? 'Anyone can view this document' : 'Only collaborators can access this document'}
+                  </p>
+                </div>
+                <Switch checked={isPublic} onCheckedChange={toggleVisibility} />
               </div>
-              <button
-                onClick={toggleVisibility}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  isPublic ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isPublic ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Add Collaborators */}
-          <div className="mb-6">
-            <h3 className="font-medium text-gray-900 mb-3">Add People</h3>
+          <div className="space-y-3">
+            <h3 className="font-medium">Add People</h3>
             <div className="relative">
-              <input
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
                 type="text"
                 placeholder="Search by email, username, or name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10"
               />
               {searchLoading && (
-                <div className="absolute right-3 top-2.5">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                 </div>
               )}
             </div>
 
             {/* Search Results */}
             {searchResults.length > 0 && (
-              <div className="mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-40 overflow-y-auto">
-                {searchResults.map((user) => (
-                  <div
-                    key={user._id}
-                    className="flex items-center justify-between p-3 hover:bg-gray-50"
-                  >
-                    <div>
-                      <p className="font-medium text-gray-900">{getUserDisplayName(user)}</p>
-                      <p className="text-sm text-gray-600">{user.email}</p>
-                    </div>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => shareWithUser(user, 'read')}
-                        disabled={loading}
-                        className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
+              <Card>
+                <CardContent className="p-0">
+                  <div className="max-h-32 overflow-y-auto scrollbar-modal rounded-md">
+                    {searchResults.map((user) => (
+                      <div
+                        key={user._id}
+                        className="flex items-center justify-between p-3 border-b last:border-b-0 hover:bg-muted/50"
                       >
-                        Read
-                      </button>
-                      <button
-                        onClick={() => shareWithUser(user, 'write')}
-                        disabled={loading}
-                        className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-                      >
-                        Write
-                      </button>
-                      <button
-                        onClick={() => shareWithUser(user, 'admin')}
-                        disabled={loading}
-                        className="px-3 py-1 text-xs bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 transition-colors"
-                      >
-                        Admin
-                      </button>
-                    </div>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="text-sm">
+                              {getUserDisplayName(user).charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-sm">{getUserDisplayName(user)}</p>
+                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => shareWithUser(user, 'read')}
+                            disabled={loading}
+                            className="text-xs"
+                          >
+                            Read
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => shareWithUser(user, 'write')}
+                            disabled={loading}
+                            className="text-xs"
+                          >
+                            Write
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => shareWithUser(user, 'admin')}
+                            disabled={loading}
+                            className="text-xs"
+                          >
+                            Admin
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </CardContent>
+              </Card>
             )}
           </div>
 
           {/* Current Collaborators */}
-          <div>
-            <h3 className="font-medium text-gray-900 mb-3">People with access</h3>
-            <div className="space-y-3">
+          <div className="space-y-3">
+            <h3 className="font-medium">People with access</h3>
+            <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-modal rounded-md pr-1">
               {/* Owner */}
               {owner && (
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                      {getUserDisplayName(owner).charAt(0).toUpperCase()}
+                <Card>
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                            {getUserDisplayName(owner).charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium text-sm">{getUserDisplayName(owner)} (You)</p>
+                          <p className="text-xs text-muted-foreground">{owner.email}</p>
+                        </div>
+                      </div>
+                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
+                        Owner
+                      </Badge>
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{getUserDisplayName(owner)} (You)</p>
-                      <p className="text-sm text-gray-600">{owner.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-1 text-xs rounded-md bg-yellow-100 text-yellow-700">
-                      Owner
-                    </span>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               )}
 
               {/* Collaborators */}
               {collaborators.map((collaborator) => (
-                <div key={collaborator.user._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                      {getUserDisplayName(collaborator.user).charAt(0).toUpperCase()}
+                <Card key={collaborator.user._id}>
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="text-sm">
+                            {getUserDisplayName(collaborator.user).charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium text-sm">{getUserDisplayName(collaborator.user)}</p>
+                          <p className="text-xs text-muted-foreground">{collaborator.user.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Select
+                          value={collaborator.permission}
+                          onValueChange={(value) => updatePermission(collaborator.user._id, value as 'read' | 'write' | 'admin')}
+                        >
+                          <SelectTrigger className="w-20 h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="read">Read</SelectItem>
+                            <SelectItem value="write">Write</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeCollaborator(collaborator.user._id)}
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{getUserDisplayName(collaborator.user)}</p>
-                      <p className="text-sm text-gray-600">{collaborator.user.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={collaborator.permission}
-                      onChange={(e) => updatePermission(collaborator.user._id, e.target.value as 'read' | 'write' | 'admin')}
-                      className="text-xs px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    >
-                      <option value="read">Read</option>
-                      <option value="write">Write</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                    <button
-                      onClick={() => removeCollaborator(collaborator.user._id)}
-                      className="text-red-600 hover:text-red-800 p-1"
-                      title="Remove collaborator"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
 
               {collaborators.length === 0 && (
-                <p className="text-sm text-gray-600 text-center py-4">
-                  No collaborators yet. Search for users above to share this document.
-                </p>
+                <Card>
+                  <CardContent className="p-6">
+                    <p className="text-sm text-muted-foreground text-center">
+                      No collaborators yet. Search for users above to share this document.
+                    </p>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
-          <div className="flex justify-end">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Done
-            </button>
           </div>
         </div>
-      </div>
-    </div>
+
+        <DialogFooter className="flex-shrink-0">
+          <Button onClick={onClose}>Done</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
