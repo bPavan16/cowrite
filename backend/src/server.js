@@ -27,7 +27,7 @@ connectToDb();
 
 const ioServer = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: ['http://localhost:5173', 'http://localhost:5175'],
         methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     }
 });
@@ -74,6 +74,46 @@ ioServer.on('connection', (socket) => {
                 } catch (error) {
                     console.error('Error saving document:', error);
                     socket.emit('error', { message: 'Error saving document: ' + error.message });
+                }
+            });
+
+            // Chat functionality
+            socket.on('send-chat-message', (messageData) => {
+                try {
+                    const message = {
+                        id: `${socket.user.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                        text: messageData.text,
+                        userId: socket.user.id,
+                        username: socket.user.username,
+                        firstName: socket.user.firstName,
+                        lastName: socket.user.lastName,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    // Send the message back to the sender for immediate display
+                    socket.emit('receive-chat-message', message);
+                    
+                    // Broadcast the message to other users in the document room (excluding sender)
+                    socket.broadcast.to(documentId).emit('receive-chat-message', message);
+                    console.log(`Chat message sent in document ${documentId} by ${socket.user.username}`);
+                } catch (error) {
+                    console.error('Error handling chat message:', error);
+                    socket.emit('error', { message: 'Error sending chat message: ' + error.message });
+                }
+            });
+
+            socket.on('user-typing', (isTyping) => {
+                try {
+                    const typingData = {
+                        userId: socket.user.id,
+                        username: socket.user.username,
+                        isTyping: isTyping
+                    };
+                    
+                    // Broadcast typing status to other users in the room
+                    socket.broadcast.to(documentId).emit('user-typing-status', typingData);
+                } catch (error) {
+                    console.error('Error handling typing status:', error);
                 }
             });
         } catch (error) {

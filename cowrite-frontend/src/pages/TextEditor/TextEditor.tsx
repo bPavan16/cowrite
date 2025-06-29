@@ -9,8 +9,9 @@ import "./TextEditor.css";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "../../hooks/useAuth";
 import ShareModal from "../../components/sharing/ShareModal";
+import ChatPanel from "../../components/chat/ChatPanel";
 import { Button } from "../../components/ui/button";
-import { Share } from "lucide-react";
+import { Share, MessageCircle } from "lucide-react";
 
 interface DocumentData {
   data?: unknown;
@@ -24,7 +25,7 @@ const TextEditor = () => {
   // All the State variables and functions are defined here
 
   const { id: documentId } = useParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   console.log("Document ID:", documentId);
 
@@ -32,6 +33,7 @@ const TextEditor = () => {
   const [quill, setQuill] = useState<Quill | null>(null);
   const [documentTitle, setDocumentTitle] = useState("Untitled Document");
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     if (socket === null || quill === null) return;
@@ -178,31 +180,94 @@ const TextEditor = () => {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      {/* Header with title and share button */}
-      <div className="bg-card border-b px-4 py-3 flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <h1 className="text-lg font-semibold">{documentTitle}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => setIsShareModalOpen(true)}
-            size="sm"
-            className="gap-2"
-          >
-            <Share className="h-4 w-4" />
-            Share
-          </Button>
+      {/* Beautiful Header with editable title and share button */}
+      <div className="bg-gradient-to-r from-white via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-950/30 dark:to-purple-950/30 border-b border-border/50 shadow-sm backdrop-blur-sm">
+        <div className="px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* Editable Document Title */}
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="flex-shrink-0 w-2 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full" />
+              <input
+                type="text"
+                value={documentTitle}
+                
+                onChange={(e) => setDocumentTitle(e.target.value)}
+                onBlur={() => {
+                  // Save title change when user finishes editing
+                  if (socket && quill) {
+                    socket.emit("save-document", {
+                      data: quill.getContents(),
+                      title: documentTitle,
+                    });
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.currentTarget.blur();
+                  }
+                }}
+                className="text-xl font-bold bg-transparent border-none outline-none focus:bg-white  focus:px-3 focus:py-1 focus:rounded-lg focus:shadow-sm transition-all duration-200 min-w-0 max-w-[max-content] flex-1 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                placeholder="Untitled Document"
+                spellCheck={false}
+              />
+            </div>
+            
+            {/* Document Status Indicator */}
+            <div className="flex items-center gap-2 mx-3 text-sm text-muted-foreground">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="hidden sm:inline">Auto-saved</span>
+            </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Button
+              onClick={() => setIsChatOpen(!isChatOpen)}
+              size="sm"
+              variant={isChatOpen ? "default" : "outline"}
+              className="gap-2 transition-all duration-200 hover:shadow-md"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span className="hidden sm:inline">Chat</span>
+            </Button>
+            <Button
+              onClick={() => setIsShareModalOpen(true)}
+              size="sm"
+              className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              <Share className="h-4 w-4" />
+              <span className="hidden sm:inline">Share</span>
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto py-3 shadow-2xl px-4 flex justify-center">
-        <div className="w-full max-w-6xl pb-10 h-[11in]">
-          {/* Quill editor container */}
-          <div id="container" ref={wrapperRef} className="h-full" />
+      {/* Enhanced Editor Container */}
+      <div className="flex-1 overflow-auto bg-gradient-to-br from-gray-50/50 via-white to-blue-50/30 dark:from-gray-900/50 dark:via-gray-900 dark:to-blue-950/30 py-6 px-4 flex justify-center">
+        <div className="w-full max-w-6xl">
+          {/* Editor with beautiful styling */}
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden backdrop-blur-sm">
+            <div id="container" ref={wrapperRef} className="min-h-[600px] min-w-[1200px]" />
+          </div>
         </div>
       </div>
-      {/* Status bar */}
-      <div className="bg-card border-t px-4 py-1.5 flex justify-between items-center"></div>
+      
+      {/* Enhanced Status bar */}
+      <div className="bg-gradient-to-r from-gray-50 via-white to-gray-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 border-t border-border/50 px-6 py-2 flex justify-between items-center text-sm text-muted-foreground">
+        <div className="flex items-center gap-4">
+          <span>Document ID: {documentId}</span>
+          {user && (
+            <span className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full" />
+              {user.firstName ? `${user.firstName} ${user.lastName}` : user.username}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-4">
+          <span>{socket ? 'Connected' : 'Disconnected'}</span>
+          <span className="text-xs opacity-60">Last saved: {new Date().toLocaleTimeString()}</span>
+        </div>
+      </div>
 
       {/* Share Modal */}
       {documentId && (
@@ -214,6 +279,14 @@ const TextEditor = () => {
           onUpdate={() => {}} // Could trigger a document refetch if needed
         />
       )}
+
+      {/* Chat Panel */}
+      <ChatPanel
+        socket={socket}
+        currentUser={user}
+        isOpen={isChatOpen}
+        onToggle={() => setIsChatOpen(!isChatOpen)}
+      />
     </div>
   );
 };

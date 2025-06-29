@@ -2,24 +2,30 @@
   
 # 📝 CoWrite
   
-  ### A real-time collaborative document editor
+  ### A modern real-time collaborative document editor with live chat
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
   [![Node.js](https://img.shields.io/badge/Node.js-22.x-green.svg)](https://nodejs.org/)
   [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green.svg)](https://www.mongodb.com/)
   [![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://reactjs.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
   [![Socket.io](https://img.shields.io/badge/Socket.io-4.x-black.svg)](https://socket.io/)
+  [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-Latest-black.svg)](https://ui.shadcn.com/)
 
 </div>
 
 ## ✨ Features
 
-- **Real-time collaboration** - Multiple users can edit documents simultaneously
-- **Rich text editing** - Format text with various styles and formatting options
-- **Document management** - Create, rename, and delete documents
-- **Auto-saving** - Changes are automatically saved to the database
-- **Responsive design** - Works on desktop and mobile devices
-- **User-friendly interface** - Clean, modern UI with intuitive controls
+- **Real-time collaboration** - Multiple users can edit documents simultaneously with live cursors
+- **Live chat system** - Built-in chat panel for real-time team communication
+- **Rich text editing** - Comprehensive text formatting with Quill.js editor
+- **Modern UI/UX** - Beautiful interface built with shadcn/ui components
+- **Document sharing** - Advanced sharing modal with permission management
+- **User authentication** - Secure login and registration system
+- **Auto-saving** - Intelligent auto-save with visual indicators
+- **Responsive design** - Fully responsive across all devices
+- **TypeScript** - Full type safety for better development experience
+- **Dark/Light themes** - Optimized for light mode with beautiful gradients
 
 ## 🖥️ Screenshots
 
@@ -40,32 +46,96 @@
 
 ## 🛠️ Tech Stack
 
-### Frontend
+### Frontend (cowrite-frontend)
 
-- **React** - UI library
-- **React Router** - Navigation
-- **Quill.js** - Rich text editor
+- **React 18** - Modern UI library with hooks
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and dev server
+- **React Router** - Client-side routing
+- **Quill.js** - Rich text editor with full-screen support
 - **Socket.io Client** - Real-time communication
-- **Tailwind CSS** - Styling
-- **Axios** - API requests
-- **React Hot Toast** - Notifications
+- **shadcn/ui** - Modern component library
+- **Tailwind CSS** - Utility-first CSS framework
+- **Lucide React** - Beautiful icon library
+- **Axios** - HTTP client for API requests
 
 ### Backend
 
-- **Node.js** - Runtime environment
-- **Express** - Web framework
-- **Socket.io** - WebSocket communication
-- **MongoDB** - Database
-- **Mongoose** - ODM for MongoDB
+- **Node.js** - JavaScript runtime
+- **Express** - Minimal web framework
+- **Socket.io** - WebSocket communication for real-time features
+- **MongoDB** - NoSQL database
+- **Mongoose** - Elegant MongoDB object modeling
+- **JWT** - Secure authentication tokens
+- **bcrypt** - Password hashing
+
+### UI Components
+
+- **shadcn/ui Components Used:**
+  - Button, Input, Card, Avatar, Badge
+  - Dialog, Alert, Skeleton
+  - Custom modals and panels
+- **Custom Components:**
+  - ChatPanel with real-time messaging
+  - ShareModal with advanced permissions
+  - AuthModal with login/register forms
+  - Enhanced TextEditor with editable titles
 
 ## 🏗️ Architecture
 
-CoWrite follows a client-server architecture:
+CoWrite follows a modern client-server architecture with real-time capabilities:
 
-1. **Frontend**: React application that handles UI rendering and user interactions
-2. **Backend**: Node.js server that manages document operations and real-time collaboration
-3. **Database**: MongoDB for document storage
-4. **Real-time Communication**: Socket.io for bidirectional communication between clients and server
+1. **Frontend (React + TypeScript)**: 
+   - Component-based architecture with shadcn/ui
+   - Real-time document synchronization
+   - Live chat system with typing indicators
+   - Responsive design with beautiful animations
+
+2. **Backend (Node.js + Express)**: 
+   - RESTful API for document management
+   - Socket.io for real-time collaboration and chat
+   - JWT authentication system
+   - MongoDB integration with Mongoose
+
+3. **Database (MongoDB)**: 
+   - Document storage with version control
+   - User management and authentication
+   - Chat message persistence
+
+4. **Real-time Features**:
+   - Document collaboration with operational transforms
+   - Live chat with message deduplication
+   - Typing indicators and user presence
+   - Auto-save with visual feedback
+
+## 🎨 Key Features in Detail
+
+### 💬 Live Chat System
+- Real-time messaging during document editing
+- Expandable/minimizable chat panel
+- Typing indicators and unread message badges
+- Message grouping and timestamps
+- Professional UI with smooth animations
+
+### 📝 Enhanced Text Editor
+- Full-screen editing experience
+- Editable document titles in header
+- Rich formatting toolbar with enhanced styling
+- Auto-save with visual indicators
+- Beautiful light theme with gradients
+
+### 🤝 Advanced Sharing
+- Share modal with copy-to-clipboard
+- Permission management system
+- Public/private document settings
+- Collaboration user list
+
+### 🎯 Modern UI/UX
+- Built with shadcn/ui component library
+- Responsive design for all screen sizes
+- Beautiful gradients and animations
+- Professional color scheme and typography
+- Custom scrollbars and hover effects
 
 ## 🚀 Getting Started
 
@@ -94,19 +164,21 @@ CoWrite follows a client-server architecture:
 3. Install frontend dependencies:
 
    ```bash
-   cd ../frontend
+   cd ../cowrite-frontend
    npm install
    ```
 
-4. Create a `.env` file in the backend directory with the following variables:
-   ```
+4. Create a `.env` file in the backend directory:
+   ```env
    PORT=3001
    MONGODB_URI=mongodb://localhost:27017/cowrite
+   JWT_SECRET=your_jwt_secret_key_here
+   NODE_ENV=development
    ```
 
 ### Running the Application
 
-1. Start the MongoDB server (if using local MongoDB)
+1. Start MongoDB server (if using local MongoDB)
 
 2. Start the backend server:
 
@@ -118,41 +190,120 @@ CoWrite follows a client-server architecture:
 3. Start the frontend development server:
 
    ```bash
-   cd frontend
+   cd cowrite-frontend
    npm run dev
    ```
 
 4. Open your browser and navigate to `http://localhost:5173`
 
+### Development Scripts
+
+**Frontend (cowrite-frontend):**
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+```
+
+**Backend:**
+```bash
+npm start            # Start production server
+npm run dev          # Start with nodemon (development)
+```
+
 ## 🔍 Usage
 
-### Creating a New Document
+### Getting Started
 
-1. Click on the "New Document" button on the home page
-2. Start typing in the editor
-3. The document will be auto-saved as you type
+1. **Register/Login**: Create an account or sign in to access your documents
+2. **Create Documents**: Click "New Document" to start writing
+3. **Real-time Editing**: Share the document URL with collaborators for live editing
+4. **Live Chat**: Use the chat panel to communicate while editing
 
-### Collaborating on a Document
+### Document Features
 
-1. Share the document URL with collaborators
-2. Multiple users can edit the document simultaneously
-3. Changes appear in real-time for all connected users
+- **Editable Titles**: Click on the document title in the header to rename
+- **Auto-save**: Changes are automatically saved with visual indicators
+- **Rich Formatting**: Use the toolbar for text styling, lists, links, and more
+- **Full-screen Editing**: Distraction-free writing experience
 
-### Managing Documents
+### Collaboration Features
 
-1. View all your documents on the home page
-2. Rename documents by clicking the "Rename" button
-3. Delete documents using the "Delete" button
+- **Real-time Sync**: See changes from other users instantly
+- **Live Chat**: Built-in chat panel for team communication
+- **Typing Indicators**: See when others are typing
+- **User Presence**: View who's currently editing the document
+
+### Sharing Documents
+
+1. Click the "Share" button in the document header
+2. Copy the document link to share with collaborators
+3. Manage permissions and visibility settings
+4. View active collaborators in the sharing modal
+
+## 🔌 Socket.io Events
+
+### Document Events
+- `get-document` - Load document content
+- `save-document` - Save document changes
+- `send-changes` - Broadcast text changes
+- `receive-changes` - Receive text changes
+
+### Chat Events
+- `send-chat-message` - Send a chat message
+- `receive-chat-message` - Receive chat messages
+- `user-typing` - Broadcast typing status
+- `user-typing-status` - Receive typing indicators
 
 ## 📡 API Endpoints
 
-### Documents
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - User login
+- `GET /api/auth/verify` - Verify JWT token
 
-- `GET /api/documents` - Get all documents
+### Documents
+- `GET /api/documents` - Get all user documents
 - `GET /api/documents/:id` - Get a specific document
 - `POST /api/documents` - Create a new document
 - `PATCH /api/documents/:id/title` - Update document title
 - `DELETE /api/documents/:id` - Delete a document
+- `POST /api/documents/:id/share` - Share document settings
+
+### Users
+- `GET /api/users/profile` - Get user profile
+- `PATCH /api/users/profile` - Update user profile
+
+## 🎯 Project Structure
+
+```
+cowrite/
+├── backend/                 # Node.js backend
+│   ├── src/
+│   │   ├── config/         # Database configuration
+│   │   ├── models/         # Mongoose models
+│   │   ├── routes/         # API routes
+│   │   ├── utils/          # Utility functions
+│   │   └── server.js       # Main server file
+│   └── package.json
+├── cowrite-frontend/        # React TypeScript frontend
+│   ├── src/
+│   │   ├── components/     # Reusable components
+│   │   │   ├── ui/         # shadcn/ui components
+│   │   │   ├── auth/       # Authentication components
+│   │   │   ├── chat/       # Chat system components
+│   │   │   └── sharing/    # Document sharing components
+│   │   ├── pages/          # Page components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── lib/            # Utility libraries
+│   │   └── main.tsx        # App entry point
+│   ├── components.json     # shadcn/ui config
+│   ├── tailwind.config.js  # Tailwind configuration
+│   └── package.json
+├── images/                  # Screenshot assets
+└── README.md
+```
 
 ## 🤝 Contributing
 
@@ -170,14 +321,35 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgements
 
-- [Quill.js](https://quilljs.com/) for the rich text editor
-- [Socket.io](https://socket.io/) for real-time capabilities
-- [Tailwind CSS](https://tailwindcss.com/) for the styling
-- [React Hot Toast](https://react-hot-toast.com/) for beautiful notifications
+- [Quill.js](https://quilljs.com/) - Rich text editor with excellent API
+- [Socket.io](https://socket.io/) - Real-time bidirectional communication
+- [shadcn/ui](https://ui.shadcn.com/) - Beautiful and accessible component library
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Lucide React](https://lucide.dev/) - Beautiful & consistent icon library
+- [React](https://reactjs.org/) - JavaScript library for building user interfaces
+- [TypeScript](https://www.typescriptlang.org/) - Typed superset of JavaScript
+- [Vite](https://vitejs.dev/) - Fast build tool and development server
+
+## 📈 Recent Updates
+
+### v2.0.0 (2025)
+- ✨ Complete UI overhaul with shadcn/ui components
+- 💬 Real-time chat system with typing indicators
+- 🎨 Beautiful light theme with gradients and animations
+- 📱 Enhanced responsive design
+- 🔧 TypeScript migration for better development experience
+- ⚡ Performance optimizations and modern React patterns
+- 🛡️ Improved authentication and security
+- 📝 Editable document titles in header
+- 🖥️ Full-screen editor experience
 
 ---
 
 <div align="center">
-  <p>Made with ❤️ by Pavan © 2023</p>
+  <p>Made with ❤️ by <a href="https://github.com/bPavan16">Pavan</a> © 2025</p>
+  <p>
+    <a href="https://github.com/bPavan16/cowrite/issues">Report Bug</a> •
+    <a href="https://github.com/bPavan16/cowrite/issues">Request Feature</a>
+  </p>
 </div>
 
