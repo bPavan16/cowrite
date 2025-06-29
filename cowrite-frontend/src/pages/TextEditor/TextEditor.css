@@ -1,0 +1,119 @@
+#container .ql-toolbar.ql-snow {
+    border: none;
+    border-bottom: 3px solid #e5e7eb;
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    position:sticky ;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.2s ease;
+    display: flex;
+    color: black;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 10;
+}
+
+#container {
+    min-width: 100%;
+    height: 100%;
+}
+
+#container .ql-toolbar.ql-snow:hover {
+    background-color: #ffffff;
+    display: flex;
+}
+
+#container .ql-container.ql-snow {
+    border: none;
+    font-family: "Inter", "Arial", sans-serif;
+    margin-top: 50px;
+    /* Add space for fixed toolbar */
+}
+
+#container .ql-editor {
+    min-height: calc(100% - 42px);
+    font-size: 12pt;
+    line-height: 1.6;
+    padding: 40px 60px;
+    color: #333;
+    background-color: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.03);
+}
+
+#container .ql-editor:focus {
+    outline: 1px;
+}
+
+/* Format toolbar buttons */
+.ql-formats button,
+.ql-formats .ql-picker {
+    margin-right: 8px;
+    opacity: 0.85;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.ql-formats button:hover,
+.ql-formats .ql-picker:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+.ql-formats button:active,
+.ql-formats .ql-picker:active {
+    transform: translateY(1px);
+}
+
+/* Improve dropdown menus */
+.ql-snow .ql-picker-options {
+    border-radius: 4px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    border: 1px solid #f0f0f0;
+}
+
+/* Style active formats */
+.ql-snow .ql-picker.ql-expanded .ql-picker-label,
+.ql-snow .ql-toolbar button.ql-active {
+    color: #1d4ed8;
+}
+
+/* Fix overflow correctly */
+.ql-container {
+    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.ql-editor {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    flex-grow: 1;
+}
+
+/* Paper-like styling */
+#container .ql-editor {
+
+    min-width: 100%;
+    min-height: 100%;
+    padding: 40px 60px;
+    margin: 0 auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    #container .ql-editor {
+        padding: 25px;
+        font-size: 11pt;
+        box-shadow: none;
+    }
+
+    #container .ql-toolbar.ql-snow {
+        padding: 0.5rem;
+    }
+}

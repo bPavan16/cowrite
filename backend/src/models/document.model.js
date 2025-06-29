@@ -13,6 +13,30 @@ const documentSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: false // Making it optional for backward compatibility
+    },
+    collaborators: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        permission: {
+            type: String,
+            enum: ['read', 'write', 'admin'],
+            default: 'write'
+        },
+        addedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    isPublic: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now
